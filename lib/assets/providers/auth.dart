@@ -1,21 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurants_app/assets/helpers/user.dart';
 import 'package:restaurants_app/assets/models/user.dart';
 
-enum Status{Uninitialized, Unauthenticated, Authenticating, Authenticated}
+enum Status { Uninitialized, Unauthenticated, Authenticating, Authenticated }
 
-class AuthProvider with ChangeNotifier{
+class AuthProvider with ChangeNotifier {
   FirebaseAuth _auth;
   FirebaseUser _user;
   Status _status = Status.Uninitialized;
+  Firestore _fireStore = Firestore.instance;
   UserServices _userServices = UserServices();
   UserMod _userMod;
 
   //Getters are implemented below
 
   Status get status => _status;
+
   UserMod get userMod => _userMod;
+
   FirebaseUser get user => _user;
 
   final formKey = GlobalKey<FormState>();
@@ -24,22 +28,26 @@ class AuthProvider with ChangeNotifier{
   TextEditingController name = TextEditingController();
   TextEditingController password = TextEditingController();
 
-  AuthProvider.initialize(): _auth = FirebaseAuth.instance{
+  AuthProvider.initialize() : _auth = FirebaseAuth.instance {
     _auth.onAuthStateChanged.listen(_onStateChanged);
   }
 
-  Future<bool> signIn() async{
-    try{
+  Future<bool> signIn() async {
+    try {
       _status = Status.Authenticating;
       notifyListeners();
-      await _auth.signInWithEmailAndPassword(email: email.text, password: password.text);
+      await _auth.signInWithEmailAndPassword(
+          email: email.text.trim(), password: password.text.trim());
       return true;
-    } catch(e){
-      return _onError(e.toString());
+    } catch (e) {
+      _status = Status.Unauthenticated;
+      notifyListeners();
+      print(e.toString());
+      return false;
     }
   }
 
-  Future<void> signOut(){
+  Future<void> signOut() {
     _auth.signOut();
     _status = Status.Unauthenticated;
     notifyListeners();
@@ -50,40 +58,40 @@ class AuthProvider with ChangeNotifier{
     try {
       _status = Status.Authenticating;
       notifyListeners();
-      await _auth.createUserWithEmailAndPassword(email: email.text, password: password.text).then((user){
-        Map<String, dynamic> values = {
+      await _auth
+          .createUserWithEmailAndPassword(
+              email: email.text.trim(), password: password.text.trim())
+          .then((result) {
+        _fireStore.collection('users').document(result.user.uid).setData({
           "name": name.text,
           "email": email.text,
-          "id": user.user.uid
-      };
-          _userServices.createUser(values);
+          "id": result.user.uid,
+          "likedFood": [],
+          "likedRestaurants": []
         });
-        return true;
-    } catch(e) {
-      return _onError(e.toString());
+      });
+      return true;
+    } catch (e) {
+      _status = Status.Unauthenticated;
+      notifyListeners();
+      print(e.toString());
+      return false;
     }
   }
 
-  Future<void> _onStateChanged(FirebaseUser firebaseUser) async{
-    if(firebaseUser == null){
+  Future<void> _onStateChanged(FirebaseUser firebaseUser) async {
+    if (firebaseUser == null) {
       _status = Status.Uninitialized;
     } else {
       _user = firebaseUser;
       _status = Status.Authenticated;
-      _userMod = await _userServices.getUserById(firebaseUser.uid);
+      _userMod = await _userServices.getUserById(user.uid);
     }
     notifyListeners();
   }
 
-  // Methods used for above functions
-  bool _onError(String error) {
-    _status = Status.Unauthenticated;
-    notifyListeners();
-    print("An error has occurred: $error");
-    return false;
-  }
-
-  void cleanControllers(){
+  // Clear values from email password and name fields.
+  void cleanControllers() {
     email.text = "";
     password.text = "";
     name.text = "";

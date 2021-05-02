@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurants_app/assets/helpers/style.dart';
-import 'package:restaurants_app/assets/models/foodProducts.dart';
+import 'package:restaurants_app/assets/models/products.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
 
 class ShoppingCart extends StatefulWidget {
@@ -9,7 +9,6 @@ class ShoppingCart extends StatefulWidget {
 }
 
 class _ShoppingCartState extends State<ShoppingCart> {
-  Product product = Product(name: "Cereals", price: 5.99, rating: 4.2, vendor: "Kellogg", wishList: true, image: "salad.png");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +55,7 @@ class _ShoppingCartState extends State<ShoppingCart> {
       backgroundColor: white,
       body: ListView(
         children: [
+     /*
           Padding(
             padding: const EdgeInsets.all(10),
             child: Container(
@@ -95,6 +95,8 @@ class _ShoppingCartState extends State<ShoppingCart> {
               ),
             ),
           ),
+
+      */
         ],
       ),
     );

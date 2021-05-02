@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:restaurants_app/assets/helpers/screen_nav.dart';
-import 'package:restaurants_app/assets/models/foodProducts.dart';
+import 'package:restaurants_app/assets/models/products.dart';
 import 'package:restaurants_app/assets/screens/productDetails.dart';
 import '../helpers/style.dart';
 import 'title.dart';
 
-List<Product> productsList =[
-  Product(name: "Cereals", price: 5.99, rating: 4.2, vendor: "Kellogg", wishList: true, image: "salad.png"),
-  Product(name: "Tacos", price: 8.99, rating: 4.7, vendor: "Kellogg", wishList: false, image: "salad.png"),
-  Product(name: "Enchiladas", price: 12.99, rating: 4.1, vendor: "Kellogg", wishList: true, image: "salad.png"),
-  Product(name: "Burger", price: 9.99, rating: 4.9, vendor: "Kellogg", wishList: true, image: "salad.png"),
-];
+List<ProductsMod> productsList =[];
 
 class Featured extends StatelessWidget {
   @override
@@ -66,11 +61,7 @@ class Featured extends StatelessWidget {
                                     ]),
                                 child: Padding(
                                   padding: const EdgeInsets.all(4),
-                                  child: productsList[index].wishList ? Icon(
-                                    Icons.favorite,
-                                    color: red,
-                                    size: 18,
-                                  ): Icon(
+                                  child: Icon(
                                   Icons.favorite_border,
                                   color: red,
                                   size: 18,

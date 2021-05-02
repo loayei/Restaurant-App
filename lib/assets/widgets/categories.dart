@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:restaurants_app/assets/models/foodcategory.dart';
+import 'package:restaurants_app/assets/models/category.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
 import '../helpers/style.dart';
 import 'title.dart';
 
-List<Category> categoriesList = [
-  Category(name: "Salad", image: "salad.png"),
-  Category(name: "Fast Food", image: "fastfood.png"),
-  Category(name: "Drinks", image: "drinks.png"),
-  Category(name: "Dessert", image: "dessert.png"),
-  Category(name: "HotDogs", image: "hotdog.png"),
-  Category(name: "Steak", image: "steak.png"),
-];
+List<CategoryMod> categoriesList = [];
 
 class Categories extends StatelessWidget {
   @override

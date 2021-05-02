@@ -1,11 +1,11 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurants_app/assets/models/foodProducts.dart';
+import 'package:restaurants_app/assets/models/products.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
 
 import '../helpers/style.dart';
 class ProductDetails extends StatefulWidget {
-  final Product product;
+  final ProductsMod product;
 
   ProductDetails({@required this.product});
 
