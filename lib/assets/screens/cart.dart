@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:restaurants_app/assets/helpers/style.dart';
-import 'package:restaurants_app/assets/models/products.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
 
 class ShoppingCart extends StatefulWidget {

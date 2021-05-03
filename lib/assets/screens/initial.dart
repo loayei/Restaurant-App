@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurants_app/assets/helpers/screen_nav.dart';
 import 'package:restaurants_app/assets/helpers/style.dart';
-import 'package:restaurants_app/assets/providers/auth.dart';
+import 'package:restaurants_app/assets/providers/category.dart';
+import 'package:restaurants_app/assets/providers/userAuth.dart';
+import 'package:restaurants_app/assets/widgets/categories.dart';
 import 'package:restaurants_app/assets/widgets/favorite_button.dart';
 import 'package:restaurants_app/assets/widgets/featured_products.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
@@ -16,7 +19,8 @@ class Initial extends StatefulWidget {
 class _InitialState extends State<Initial> {
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
+    final user = Provider.of<UserProvider>(context);
+    final categoryprov = Provider.of<CategoryProv>(context);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: white),
@@ -71,13 +75,13 @@ class _InitialState extends State<Initial> {
                   color: black,
                 ),
                 accountName: CustomText(
-                  text: authProvider.userMod?.name,
+                  text: user.userMod?.name,
                   color: white,
                   weight: FontWeight.bold,
                   size: 18,
                 ),
                 accountEmail: CustomText(
-                  text: authProvider.userMod?.email,
+                  text: user.userMod?.email,
                   color: grey,
                 )),
             ListTile(
@@ -164,236 +168,12 @@ class _InitialState extends State<Initial> {
             ),
             Container(
               height: 100,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          width: 140,
-                          height: 160,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Image.asset("image/salad.png")),
-                        ),
-                        Container(
-                          width: 140,
-                          height: 160,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(30),
-                                bottomRight: Radius.circular(30),
-                              ),
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.4),
-                                  Colors.black.withOpacity(0.1),
-                                  Colors.black.withOpacity(0.05),
-                                  Colors.black.withOpacity(0.025),
-                                ],
-                              )),
-                        ),
-                        Positioned.fill(
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: CustomText(
-                                  text: "Indian",
-                                  color: white,
-                                  size: 26,
-                                  weight: FontWeight.w300,
-                                )))
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          width: 140,
-                          height: 160,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Image.asset("image/salad.png")),
-                        ),
-                        Container(
-                          width: 140,
-                          height: 160,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(30),
-                                bottomRight: Radius.circular(30),
-                              ),
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.4),
-                                  Colors.black.withOpacity(0.1),
-                                  Colors.black.withOpacity(0.05),
-                                  Colors.black.withOpacity(0.025),
-                                ],
-                              )),
-                        ),
-                        Positioned.fill(
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: CustomText(
-                                  text: "Italian",
-                                  color: white,
-                                  size: 26,
-                                  weight: FontWeight.w300,
-                                )))
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          width: 140,
-                          height: 160,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Image.asset("image/salad.png")),
-                        ),
-                        Container(
-                          width: 140,
-                          height: 160,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(30),
-                                bottomRight: Radius.circular(30),
-                              ),
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.4),
-                                  Colors.black.withOpacity(0.1),
-                                  Colors.black.withOpacity(0.05),
-                                  Colors.black.withOpacity(0.025),
-                                ],
-                              )),
-                        ),
-                        Positioned.fill(
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: CustomText(
-                                  text: "Indian",
-                                  color: white,
-                                  size: 26,
-                                  weight: FontWeight.w300,
-                                )))
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          width: 140,
-                          height: 160,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Image.asset("image/salad.png")),
-                        ),
-                        Container(
-                          width: 140,
-                          height: 160,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(30),
-                                bottomRight: Radius.circular(30),
-                              ),
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.4),
-                                  Colors.black.withOpacity(0.1),
-                                  Colors.black.withOpacity(0.05),
-                                  Colors.black.withOpacity(0.025),
-                                ],
-                              )),
-                        ),
-                        Positioned.fill(
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: CustomText(
-                                  text: "Indian",
-                                  color: white,
-                                  size: 26,
-                                  weight: FontWeight.w300,
-                                )))
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          width: 140,
-                          height: 160,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Image.asset("image/salad.png")),
-                        ),
-                        Container(
-                          width: 140,
-                          height: 160,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(30),
-                                bottomRight: Radius.circular(30),
-                              ),
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(0.4),
-                                  Colors.black.withOpacity(0.1),
-                                  Colors.black.withOpacity(0.05),
-                                  Colors.black.withOpacity(0.025),
-                                ],
-                              )),
-                        ),
-                        Positioned.fill(
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: CustomText(
-                                  text: "Indian",
-                                  color: white,
-                                  size: 26,
-                                  weight: FontWeight.w300,
-                                )))
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categoryprov.categories.length,
+                  itemBuilder: (context, index){
+                return CategoryWidget(category: categoryprov.categories[index],);
+              }),
             ),
             SizedBox(
               height: 5,

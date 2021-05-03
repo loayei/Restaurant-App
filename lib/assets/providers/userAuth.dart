@@ -6,7 +6,7 @@ import 'package:restaurants_app/assets/models/user.dart';
 
 enum Status { Uninitialized, Unauthenticated, Authenticating, Authenticated }
 
-class AuthProvider with ChangeNotifier {
+class UserProvider with ChangeNotifier {
   FirebaseAuth _auth;
   FirebaseUser _user;
   Status _status = Status.Uninitialized;
@@ -28,7 +28,7 @@ class AuthProvider with ChangeNotifier {
   TextEditingController name = TextEditingController();
   TextEditingController password = TextEditingController();
 
-  AuthProvider.initialize() : _auth = FirebaseAuth.instance {
+  UserProvider.initialize() : _auth = FirebaseAuth.instance {
     _auth.onAuthStateChanged.listen(_onStateChanged);
   }
 

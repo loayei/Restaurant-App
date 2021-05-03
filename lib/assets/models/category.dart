@@ -7,7 +7,7 @@ class CategoryMod {
 
   String _name;
   String _image;
-  String _id;
+  int _id;
 
   // Getters implemented below
 
@@ -15,7 +15,7 @@ class CategoryMod {
 
   String get image => _image;
 
-  String get id => _id;
+  int get id => _id;
 
   CategoryMod.fromSnapshot(DocumentSnapshot snapshot) {
     _name = snapshot.data[NAME];

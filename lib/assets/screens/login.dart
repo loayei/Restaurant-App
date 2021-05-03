@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurants_app/assets/helpers/screen_nav.dart';
 import 'package:restaurants_app/assets/helpers/style.dart';
-import 'package:restaurants_app/assets/providers/auth.dart';
+import 'package:restaurants_app/assets/providers/userAuth.dart';
 import 'package:restaurants_app/assets/screens/registration.dart';
 import 'package:restaurants_app/assets/widgets/loading.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
@@ -18,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _key = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
+    final authProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       key: _key,
       body: authProvider.status == Status.Authenticating? Loading(): SingleChildScrollView(
