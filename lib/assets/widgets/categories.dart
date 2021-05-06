@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:restaurants_app/assets/models/category.dart';
+import 'package:restaurants_app/assets/widgets/loading.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
+import 'package:transparent_image/transparent_image.dart';
 import '../helpers/style.dart';
 import 'title.dart';
 
@@ -19,8 +21,19 @@ class CategoryWidget extends StatelessWidget {
             width: 140,
             height: 160,
             child: ClipRRect(
-                borderRadius: BorderRadius.circular(30),
-                child: Image.network(category.image)),
+              borderRadius: BorderRadius.circular(30),
+              child: Stack(
+                children: [
+                  Positioned.fill(child: Align(
+                    alignment: Alignment.center,
+                    child: Loading(),
+                  )),
+                  Center(
+                    child: FadeInImage.memoryNetwork(placeholder: kTransparentImage, image: category.image),
+                  )
+                ],
+              ),
+            ),
           ),
           Container(
             width: 140,
@@ -58,4 +71,3 @@ class CategoryWidget extends StatelessWidget {
     );
   }
 }
-

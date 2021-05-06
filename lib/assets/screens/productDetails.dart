@@ -1,9 +1,16 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurants_app/assets/helpers/screen_nav.dart';
 import 'package:restaurants_app/assets/models/products.dart';
+import 'package:restaurants_app/assets/providers/appLoading.dart';
+import 'package:restaurants_app/assets/providers/userAuth.dart';
+import 'package:restaurants_app/assets/screens/cart.dart';
+import 'package:restaurants_app/assets/widgets/loading.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
 
 import '../helpers/style.dart';
+
 class ProductDetails extends StatefulWidget {
   final ProductsMod product;
 
@@ -14,125 +21,118 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
+  int quantity = 1;
+
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context);
+    final app = Provider.of<AppProv>(context);
     return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: black),
+        backgroundColor: white,
+        elevation: 0.0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.shopping_cart),
+            onPressed: () {
+              changeScreen(context, ShoppingCartScr());
+            },
+          ),
+        ],
+        leading: IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+      ),
       backgroundColor: white,
       body: SafeArea(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              height: 300,
-              child: Stack(
-                children: <Widget>[
-                  Carousel(
-                    images: [
-                      AssetImage('image/${widget.product.image}'),
-                      AssetImage('image/${widget.product.image}'),
-                      AssetImage('image/${widget.product.image}')
-                    ],
-                    dotBgColor: white,
-                    dotColor: grey,
-                    dotIncreasedColor: red,
-                    autoplay: false,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(Icons.arrow_back_ios, color: black,),
-                        onPressed: (){Navigator.pop(context);},
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right:4.0),
-                        child: Stack(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Stack(
-                                children: <Widget>[
-                                  Image.asset("image/cart.png", width: 30, height: 30,),
-
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              right: 5,
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: grey,
-                                          offset: Offset(2, 1),
-                                          blurRadius: 3
-                                      )
-                                    ],
-                                    color: white,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 4, right: 4),
-                                    child: CustomText(text: "2", color: red, size: 18, weight: FontWeight.bold,),
-                                  )),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  Positioned(
-                    right: 14,
-                    bottom: 60,
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: grey,
-                              offset: Offset(2, 3),
-                              blurRadius: 3
-                            )
-                          ]
-                        ),
-                        child: Padding(
-                            padding: const EdgeInsets.all(6),
-                            child: Icon(
-                            Icons.favorite,
-                              size: 22,
-                              color: red,
-                            ),
-                        )),
-                  )
-                ],
+            CircleAvatar(
+              radius: 120,
+              backgroundImage: NetworkImage(widget.product.image),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            CustomText(
+                text: widget.product.name, size: 26, weight: FontWeight.bold),
+            CustomText(
+                text: "\$${widget.product.price}",
+                size: 20,
+                weight: FontWeight.w400),
+            SizedBox(
+              height: 10,
+            ),
+            CustomText(text: "Description", size: 18, weight: FontWeight.w400),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                widget.product.description,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: grey, fontWeight: FontWeight.w300),
               ),
             ),
-            CustomText(text: widget.product.name, size: 28, weight: FontWeight.bold,),
-            CustomText(text: "\$" + widget.product.price.toString(), size: 18, weight: FontWeight.w600,),
-
             SizedBox(
               height: 15,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(icon: Icon(Icons.remove, size: 36, color: red[300],), onPressed: (){}),
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                      icon: Icon(
+                        Icons.remove,
+                        size: 36,
+                      ),
+                      onPressed: () {
+                        if (quantity != 1) {
+                          setState(() {
+                            quantity -= 1;
+                          });
+                        }
+                      }),
+                ),
                 GestureDetector(
-                  onTap: (){},
+                  onTap: () {
+                    app.LoadingSwitch();
+                    user.insertToCart(product: widget.product, quantity: quantity);
+                    app.LoadingSwitch();
+                  },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: red,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(30,12,30,12),
-                      child: CustomText(text: "Add To Bag", color: white, size:24, weight: FontWeight.w600,),
+                        color: red, borderRadius: BorderRadius.circular(20)),
+                    child: app.isLoading ? Loading() : Padding(
+                      padding: const EdgeInsets.fromLTRB(28, 12, 28, 12),
+                      child: CustomText(
+                        text: "Add $quantity To Cart",
+                        color: white,
+                        size: 22,
+                        weight: FontWeight.w300,
+                      ),
                     ),
                   ),
                 ),
-                IconButton(icon: Icon(Icons.add, size: 36, color: red[300],), onPressed: (){}),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        size: 36,
+                        color: red,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          quantity += 1;
+                        });
+                      }),
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),

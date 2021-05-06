@@ -2,14 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurants_app/assets/helpers/screen_nav.dart';
 import 'package:restaurants_app/assets/helpers/style.dart';
+import 'package:restaurants_app/assets/providers/appLoading.dart';
 import 'package:restaurants_app/assets/providers/category.dart';
+import 'package:restaurants_app/assets/providers/products.dart';
+import 'package:restaurants_app/assets/providers/restaurant.dart';
 import 'package:restaurants_app/assets/providers/userAuth.dart';
+import 'package:restaurants_app/assets/screens/login.dart';
+import 'package:restaurants_app/assets/screens/restaurant.dart';
+import 'package:restaurants_app/assets/screens/searchedProducts.dart';
 import 'package:restaurants_app/assets/widgets/categories.dart';
-import 'package:restaurants_app/assets/widgets/favorite_button.dart';
 import 'package:restaurants_app/assets/widgets/featured_products.dart';
+import 'package:restaurants_app/assets/widgets/loading.dart';
+import 'package:restaurants_app/assets/widgets/restaurant.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
 import 'package:provider/provider.dart';
 import 'cart.dart';
+import 'category.dart';
 
 class Initial extends StatefulWidget {
   @override
@@ -20,7 +28,10 @@ class _InitialState extends State<Initial> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context);
-    final categoryprov = Provider.of<CategoryProv>(context);
+    final app = Provider.of<AppProv>(context);
+    final categoryProv = Provider.of<CategoryProv>(context);
+    final restaurantProv = Provider.of<RestaurantProv>(context);
+    final productProv = Provider.of<ProductProv>(context);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: white),
@@ -36,32 +47,8 @@ class _InitialState extends State<Initial> {
               IconButton(
                 icon: Icon(Icons.shopping_cart_outlined),
                 onPressed: () {
-                  changeScreen(context, ShoppingCart());
+                  changeScreen(context, ShoppingCartScr());
                 },
-              ),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Container(
-                    height: 10,
-                    width: 10,
-                    decoration: BoxDecoration(
-                        color: red, borderRadius: BorderRadius.circular(20))),
-              ),
-            ],
-          ),
-          Stack(
-            children: [
-              IconButton(
-                  icon: Icon(Icons.notifications_outlined), onPressed: () {}),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Container(
-                    height: 10,
-                    width: 10,
-                    decoration: BoxDecoration(
-                        color: red, borderRadius: BorderRadius.circular(20))),
               ),
             ],
           ),
@@ -85,24 +72,12 @@ class _InitialState extends State<Initial> {
                   color: grey,
                 )),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                changeScreen(context, Initial());
+              },
               leading: Icon(Icons.home_outlined),
               title: CustomText(
                 text: "Home",
-              ),
-            ),
-            ListTile(
-              onTap: () {},
-              leading: Icon(Icons.fastfood_outlined),
-              title: CustomText(
-                text: "Liked Food",
-              ),
-            ),
-            ListTile(
-              onTap: () {},
-              leading: Icon(Icons.restaurant_menu_outlined),
-              title: CustomText(
-                text: "Liked Restaurants",
               ),
             ),
             ListTile(
@@ -113,410 +88,153 @@ class _InitialState extends State<Initial> {
               ),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                changeScreen(context, ShoppingCartScr());
+              },
               leading: Icon(Icons.shopping_cart_outlined),
               title: CustomText(
                 text: "Cart",
               ),
             ),
             ListTile(
-              onTap: () {},
-              leading: Icon(Icons.settings_outlined),
+              onTap: () {
+                user.signOut();
+                changeScreenReplacement(context, LoginScreen());
+              },
+              leading: Icon(Icons.exit_to_app_outlined),
               title: CustomText(
-                text: "Settings",
+                text: "Sign Out",
               ),
             ),
           ],
         ),
       ),
       backgroundColor: white,
-      body: SafeArea(
-        child: ListView(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                  color: black,
-                  borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(20),
-                      bottomLeft: Radius.circular(20))),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 8, left: 8, right: 8, bottom: 15),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.search,
-                      color: red,
-                    ),
-                    trailing: Icon(
-                      Icons.filter_list,
-                      color: red,
-                    ),
-                    title: TextField(
-                      decoration: InputDecoration(
-                        hintText: "Search for food or restaurant",
-                        border: InputBorder.none,
+      body: app.isLoading
+          ? Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [Loading()],
+              ),
+            )
+          : SafeArea(
+              child: ListView(
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                        color: black,
+                        borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(20),
+                            bottomLeft: Radius.circular(20))),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 8, left: 8, right: 8, bottom: 15),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.search,
+                            color: red,
+                          ),
+                          title: TextField(
+                            textInputAction: TextInputAction.search,
+                            onSubmitted: (pattern) async {
+                              app.LoadingSwitch();
+                              await productProv.search(productName: pattern);
+                              changeScreen(context, SearchedProductsScreen());
+                              app.LoadingSwitch();
+                            },
+                            decoration: InputDecoration(
+                              hintText: "Search for food or restaurant",
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Container(
-              height: 100,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categoryprov.categories.length,
-                  itemBuilder: (context, index){
-                return CategoryWidget(category: categoryprov.categories[index],);
-              }),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  CustomText(
-                    text: "Featured",
-                    size: 20,
-                    color: grey,
+                  Container(
+                    height: 100,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: categoryProv.categories.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () async {
+                              // app.LoadingSwitch();
+                              await productProv.startProductsByCategory(
+                                  categoryName:
+                                      categoryProv.categories[index].name);
+                              //app.LoadingSwitch();
+                              changeScreen(
+                                  context,
+                                  CategoryScreen(
+                                    categoryModel:
+                                        categoryProv.categories[index],
+                                  ));
+                            },
+                            child: CategoryWidget(
+                              category: categoryProv.categories[index],
+                            ),
+                          );
+                        }),
                   ),
-                  CustomText(
-                    text: "see all",
-                    size: 14,
-                    color: black,
-                  ),
-                ],
-              ),
-            ),
-            Featured(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  CustomText(
-                    text: "Popular restaurants",
-                    size: 20,
-                    color: grey,
-                  ),
-                  CustomText(
-                    text: "see all",
-                    size: 14,
-                    color: black,
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20.0),
-                        child: Image.asset("image/salad.png")),
+                  SizedBox(
+                    height: 5,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        FavoriteButton(Icons.favorite),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            width: 50,
-                            decoration: BoxDecoration(
-                              color: white,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Icon(
-                                    Icons.star,
-                                    color: Colors.purple[900],
-                                    size: 20,
-                                  ),
-                                ),
-                                Text("4.5"),
-                              ],
-                            ),
-                          ),
+                        CustomText(
+                          text: "Featured",
+                          size: 20,
+                          color: grey,
                         ),
                       ],
                     ),
                   ),
-                  Positioned.fill(
-                      child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Colors.black.withOpacity(0.8),
-                              Colors.black.withOpacity(0.7),
-                              Colors.black.withOpacity(0.6),
-                              Colors.black.withOpacity(0.4),
-                              Colors.black.withOpacity(0.1),
-                              Colors.black.withOpacity(0.05),
-                              Colors.black.withOpacity(0.025),
-                            ],
-                          )),
-                    ),
-                  )),
-                  Positioned.fill(
-                      child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-                          child: RichText(
-                            text: TextSpan(children: [
-                              TextSpan(
-                                  text: "Santos Tacho \n",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              TextSpan(
-                                  text: "avg meal price: ",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w300)),
-                              TextSpan(
-                                  text: "\$5.99 \n",
-                                  style: TextStyle(fontSize: 16)),
-                            ], style: TextStyle(color: white)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ))
-                ],
-              ),
-            ),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20.0),
-                        child: Image.asset("image/salad.png")),
-                  ),
+                  Featured(),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        FavoriteButton(Icons.favorite),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            width: 50,
-                            decoration: BoxDecoration(
-                              color: white,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Icon(
-                                    Icons.star,
-                                    color: Colors.purple[900],
-                                    size: 20,
-                                  ),
-                                ),
-                                Text("4.5"),
-                              ],
-                            ),
-                          ),
+                        CustomText(
+                          text: "Popular restaurants",
+                          size: 20,
+                          color: grey,
                         ),
                       ],
                     ),
                   ),
-                  Positioned.fill(
-                      child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Colors.black.withOpacity(0.8),
-                              Colors.black.withOpacity(0.7),
-                              Colors.black.withOpacity(0.6),
-                              Colors.black.withOpacity(0.4),
-                              Colors.black.withOpacity(0.1),
-                              Colors.black.withOpacity(0.05),
-                              Colors.black.withOpacity(0.025),
-                            ],
-                          )),
-                    ),
-                  )),
-                  Positioned.fill(
-                      child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-                          child: RichText(
-                            text: TextSpan(children: [
-                              TextSpan(
-                                  text: "Santos Tacho \n",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              TextSpan(
-                                  text: "avg meal price: ",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w300)),
-                              TextSpan(
-                                  text: "\$5.99 \n",
-                                  style: TextStyle(fontSize: 16)),
-                            ], style: TextStyle(color: white)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ))
+                  Column(
+                    children: restaurantProv.restaurants
+                        .map((item) => GestureDetector(
+                              onTap: () async {
+                                app.LoadingSwitch();
+                                await productProv.startProductsByRestaurant(
+                                    restaurantId: item.id);
+                                app.LoadingSwitch();
+                                changeScreen(
+                                    context,
+                                    RestaurantScreen(
+                                      restaurantModel: item,
+                                    ));
+                              },
+                              child: RestaurantWidget(
+                                restaurant: item,
+                              ),
+                            ))
+                        .toList(),
+                  )
                 ],
               ),
             ),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20.0),
-                        child: Image.asset("image/salad.png")),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        FavoriteButton(Icons.favorite),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            width: 50,
-                            decoration: BoxDecoration(
-                              color: white,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Icon(
-                                    Icons.star,
-                                    color: Colors.purple[900],
-                                    size: 20,
-                                  ),
-                                ),
-                                Text("4.5"),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned.fill(
-                      child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Colors.black.withOpacity(0.8),
-                              Colors.black.withOpacity(0.7),
-                              Colors.black.withOpacity(0.6),
-                              Colors.black.withOpacity(0.4),
-                              Colors.black.withOpacity(0.1),
-                              Colors.black.withOpacity(0.05),
-                              Colors.black.withOpacity(0.025),
-                            ],
-                          )),
-                    ),
-                  )),
-                  Positioned.fill(
-                      child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-                          child: RichText(
-                            text: TextSpan(children: [
-                              TextSpan(
-                                  text: "Santos Tacho \n",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              TextSpan(
-                                  text: "avg meal price: ",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w300)),
-                              TextSpan(
-                                  text: "\$5.99 \n",
-                                  style: TextStyle(fontSize: 16)),
-                            ], style: TextStyle(color: white)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ))
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurants_app/assets/helpers/user.dart';
+import 'package:restaurants_app/assets/models/products.dart';
 import 'package:restaurants_app/assets/models/user.dart';
+import 'package:uuid/uuid.dart';
 
 enum Status { Uninitialized, Unauthenticated, Authenticating, Authenticated }
 
@@ -79,9 +81,45 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> insertToCart({ProductsMod product, int quantity}) async {
+    //try {
+      var uuid = Uuid();
+      String cartStuffId = uuid.v4();
+      bool itemInCart = false;
+      //prevent duplicates
+      List cart = _userMod.cart;
+      Map cartStuff = {
+        "id": cartStuffId,
+        "name": product.name,
+        "image": product.image,
+        "productId": product.id,
+        "price": product.price,
+        "quantity": quantity,
+      };
+      //prevent duplicates by adding another count of the product to the cart
+      //instead of a new item.
+      for(Map item in cart){
+        if (item["productId"] == cartStuff["productId"]) {
+          item["quantity"] = item["quantity"] + quantity;
+          itemInCart = true;
+          break;
+          //break the loop after checking
+        }
+      }
+      if(!itemInCart) {
+        //if item does not exist then simply add to cart
+        _userMod.cart.add(cartStuff);
+      }
+      _userServices.insertToCart(userId: _user.uid, cartStuff: cartStuff);
+   //   return true;
+   // } catch (e) {
+    //  return false;
+   // }
+  }
+
   Future<void> _onStateChanged(FirebaseUser firebaseUser) async {
     if (firebaseUser == null) {
-      _status = Status.Uninitialized;
+      _status = Status.Unauthenticated;
     } else {
       _user = firebaseUser;
       _status = Status.Authenticated;
@@ -90,7 +128,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Clear values from email password and name fields.
+// Clear values from email password and name fields.
   void cleanControllers() {
     email.text = "";
     password.text = "";

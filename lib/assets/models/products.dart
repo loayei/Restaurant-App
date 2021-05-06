@@ -11,23 +11,25 @@ class ProductsMod {
   static const RESTAURANT_ID = "restaurantId";
   static const IMAGE = "image";
   static const CATEGORY = "category";
+  static const DESCRIPTION = "description";
 
   String _name;
-  String _id;
+  int _id;
   double _price;
   double _rating;
   int _noOfRatings;
   bool _featured;
   String _image;
   String _restaurant;
-  String _restaurantId;
+  int _restaurantId;
   String _category;
+  String _description;
 
   //Getters are implemented below
 
   String get name => _name;
 
-  String get id => _id;
+  int get id => _id;
 
   double get price => _price;
 
@@ -41,9 +43,11 @@ class ProductsMod {
 
   String get restaurant => _restaurant;
 
-  String get restaurantId => _restaurantId;
+  int get restaurantId => _restaurantId;
 
   String get category => _category;
+
+  String get description => _description;
 
   ProductsMod.fromSnapshot(DocumentSnapshot snapshot) {
     _name = snapshot.data[NAME];
@@ -56,5 +60,6 @@ class ProductsMod {
     _restaurant = snapshot.data[RESTAURANT];
     _restaurantId = snapshot.data[RESTAURANT_ID];
     _category = snapshot.data[CATEGORY];
+    _description = snapshot.data[DESCRIPTION];
   }
 }

@@ -7,16 +7,10 @@ class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SpinKitPouringHourglass(
-            color: black,
-            size: 50.0,
-          )
-        ],
-      ),
-    );
+        color: white,
+        child: SpinKitThreeBounce(
+          color: black,
+          size: 25.0,
+        ));
   }
 }

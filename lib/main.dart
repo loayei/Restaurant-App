@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurants_app/assets/providers/appLoading.dart';
 import 'package:restaurants_app/assets/providers/category.dart';
+import 'package:restaurants_app/assets/providers/products.dart';
+import 'package:restaurants_app/assets/providers/restaurant.dart';
 import 'package:restaurants_app/assets/providers/userAuth.dart';
 import 'package:restaurants_app/assets/screens/initial.dart';
 import 'package:restaurants_app/assets/screens/login.dart';
@@ -11,7 +14,10 @@ void main() {
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: UserProvider.initialize()),
-        ChangeNotifierProvider.value(value: CategoryProv.initialzie())
+        ChangeNotifierProvider.value(value: CategoryProv.initialize()),
+        ChangeNotifierProvider.value(value: RestaurantProv.initialize()),
+        ChangeNotifierProvider.value(value: ProductProv.initialize()),
+        ChangeNotifierProvider.value(value: AppProv()),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

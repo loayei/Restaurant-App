@@ -1,87 +1,96 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurants_app/assets/helpers/screen_nav.dart';
-import 'package:restaurants_app/assets/models/products.dart';
 import 'package:restaurants_app/assets/screens/productDetails.dart';
+import 'package:transparent_image/transparent_image.dart';
+import '../providers/products.dart';
 import '../helpers/style.dart';
+import 'loading.dart';
 import 'title.dart';
-
-List<ProductsMod> productsList =[];
 
 class Featured extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final productProv = Provider.of<ProductProv>(context);
     return Container(
-        height: 240,
-        child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: productsList.length,
-            itemBuilder: (_, index) {
-              return Padding(
-                padding: EdgeInsets.fromLTRB(12,14,16,12),
+      height: 240,
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: productProv.products.length,
+          itemBuilder: (_, index) {
+            return Padding(
+                padding: EdgeInsets.fromLTRB(12, 14, 16, 12),
                 child: GestureDetector(
-                  onTap: (){
-                    changeScreen(_, ProductDetails(product: productsList[index],));
+                  onTap: () {
+                    changeScreen(
+                        _,
+                        ProductDetails(
+                          product: productProv.products[index],
+                        ));
                   },
                   child: Container(
                     height: 220,
                     width: 200,
-                    decoration: BoxDecoration(color: white, boxShadow: [
-                      BoxShadow(
-                          color: red[100],
-                          offset: Offset(15, 5),
-                          blurRadius: 25)
-                    ]),
+                    decoration: BoxDecoration(
+                        color: white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                              color: red[100],
+                              offset: Offset(15, 5),
+                              blurRadius: 25)
+                        ]),
                     child: Column(
                       children: <Widget>[
-                        Image.asset(
-                          "image/${productsList[index].image}",
-                          height: 140,
-                          width: 140,
+                        ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20)),
+                          child: Stack(
+                            children: <Widget>[
+                              Positioned.fill(
+                                  child: Align(
+                                alignment: Alignment.center,
+                                child: Loading(),
+                              )),
+                              Center(
+                                child: FadeInImage.memoryNetwork(
+                                  placeholder: kTransparentImage,
+                                  image: productProv.products[index].image,
+                                  height: 126,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                         Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: CustomText(text: productsList[index].name),
+                              child: CustomText(
+                                text: productProv.products[index].name,
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.all(8),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(20),
-                                    color: white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: grey[500],
-                                          offset: Offset(1, 1),
-                                          blurRadius: 4)
-                                    ]),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4),
-                                  child: Icon(
-                                  Icons.favorite_border,
-                                  color: red,
-                                  size: 18,
-                                )
-                                ),
+                              child: GestureDetector(
+                                onTap: () {},
+                                child: Container(),
                               ),
                             )
                           ],
                         ),
                         Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                             Row(
-                              children: <Widget>[
+                              children: [
                                 Padding(
-                                  padding:
-                                  const EdgeInsets.only(left: 8.0),
+                                  padding: const EdgeInsets.only(left: 8.0),
                                   child: CustomText(
-                                    text: productsList[index].rating.toString(),
+                                    text: productProv.products[index].rating
+                                        .toString(),
                                     color: grey,
                                     size: 14,
                                   ),
@@ -119,18 +128,17 @@ class Featured extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(right: 4.0),
                               child: CustomText(
-                                text: "\$${productsList[index].price}",
+                                text: "\$${productProv.products[index].price}",
                                 weight: FontWeight.bold,
                               ),
-                            )
+                            ),
                           ],
-                        )
+                        ),
                       ],
                     ),
                   ),
-                ),
-              );
-            }));
+                ));
+          }),
+    );
   }
 }
-

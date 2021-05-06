@@ -6,7 +6,7 @@ class CategoryProv with ChangeNotifier {
   CategoryServices _categoryServices = CategoryServices();
   List<CategoryMod> categories = [];
 
-  CategoryProv.initialzie(){
+  CategoryProv.initialize(){
     _startCategories();
   }
 

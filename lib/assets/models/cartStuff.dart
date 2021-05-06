@@ -13,7 +13,7 @@ class CartStuffMod {
   String _id;
   String _productId;
   double _price;
-  int _numberOfItems;
+  int quantity;
 
   // Getters implemented below
 
@@ -27,14 +27,23 @@ class CartStuffMod {
 
   double get price => _price;
 
-  int get numberOfItems => _numberOfItems;
+  int get numberOfItems => quantity;
 
-  CartStuffMod.fromSnapshot(DocumentSnapshot snapshot) {
-    _name = snapshot.data[NAME];
-    _image = snapshot.data[IMAGE];
-    _id = snapshot.data[ID];
-    _productId = snapshot.data[PRODUCT_ID];
-    _price = snapshot.data[PRICE];
-    _numberOfItems = snapshot.data[NUMBER_OF_ITEMS];
+  CartStuffMod.fromMap(Map data) {
+    _name = data[NAME];
+    _image = data[IMAGE];
+    _id = data[ID];
+    _productId = data[PRODUCT_ID];
+    _price = data[PRICE];
+    quantity = data[NUMBER_OF_ITEMS];
   }
+
+  Map toMap() => {
+    NAME: _name,
+    IMAGE: _image,
+    ID: _id,
+    PRODUCT_ID: _productId,
+    PRICE: _price,
+    NUMBER_OF_ITEMS: quantity
+  };
 }

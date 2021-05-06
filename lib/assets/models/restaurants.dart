@@ -10,7 +10,7 @@ class RestaurantMod {
   static const IMAGE = "image";
 
   String _name;
-  String _id;
+  int _id;
   double _averagePrice;
   double _rating;
   int _noOfRatings;
@@ -21,7 +21,7 @@ class RestaurantMod {
 
   String get name => _name;
 
-  String get id => _id;
+  int get id => _id;
 
   double get averagePrice => _averagePrice;
 

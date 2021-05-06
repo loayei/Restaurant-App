@@ -1,102 +1,147 @@
 import 'package:flutter/material.dart';
 import 'package:restaurants_app/assets/helpers/style.dart';
+import 'package:restaurants_app/assets/providers/userAuth.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
+import 'package:provider/provider.dart';
 
-class ShoppingCart extends StatefulWidget {
+class ShoppingCartScr extends StatefulWidget {
   @override
-  _ShoppingCartState createState() => _ShoppingCartState();
+  _ShoppingCartScrState createState() => _ShoppingCartScrState();
 }
 
-class _ShoppingCartState extends State<ShoppingCart> {
+class _ShoppingCartScrState extends State<ShoppingCartScr> {
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon: Icon(Icons.arrow_back_ios, color: black,), onPressed: null),
+        iconTheme: IconThemeData(color: black),
         backgroundColor: white,
-        elevation: 0,
-        centerTitle: true,
-        title: CustomText(text: "Shopping Cart",),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(top:9),
-            child: Stack(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: Image.asset("image/cart.png", width: 30, height: 20,),
-                ),
-                Positioned(
-                  bottom: 7,
-                  right: 5,
-                  child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                              color: grey[400],
-                              offset: Offset(2, 1),
-                              blurRadius: 3
-                          )
-                        ],
-                        color: white,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 4, right: 4),
-                        child: CustomText(text: "2", color: red, size: 16, weight: FontWeight.bold,),
-                      )),
-                ),
-              ],
-            ),
-          ),
-        ],
+        elevation: 0.0,
+        title: CustomText(
+          text: "Shopping cart",
+        ),
+        leading: IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
       ),
       backgroundColor: white,
-      body: ListView(
-        children: [
-     /*
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Container(
-              height: 120,
-              width: MediaQuery.of(context).size.width - 10,
-              decoration: BoxDecoration(
-                color: white,
-                boxShadow: [
-                  BoxShadow(
-                    color: red[200],
-                    offset: Offset(3, 4),
-                    blurRadius: 30
-                  )
-                ]
-              ),
-              child: Row(
-                children: [
-                  Image.asset(
-                    "image/${product.image}",
-                    height: 120,
-                    width: 120,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      RichText(text: TextSpan(children: [
-                        TextSpan(text: product.name + "\n", style: TextStyle(color: black, fontSize: 20)),
-                        TextSpan(text: "\$" + product.price.toString(), style: TextStyle(color: black, fontSize: 17, fontWeight: FontWeight.bold))
-                      ]),),
-                      SizedBox(
-                        width: 136,
+      body: ListView.builder(
+          itemCount: user.userMod.cart.length,
+          itemBuilder: (_, index) {
+            List itemsCart = user.userMod.cart;
+            return Padding(
+              padding: const EdgeInsets.all(10),
+              child: Container(
+                height: 100,
+               // width: MediaQuery.of(context).size.width - 10,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: red[200], offset: Offset(3, 4), blurRadius: 30)
+                    ]),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        topLeft: Radius.circular(20),
                       ),
-                      IconButton(icon: Icon(Icons.delete), onPressed: null)
-                    ],
-                  )
-                ],
+                      child: Image.network(
+                        user.userMod.cart[index]["image"],
+                        height: 90,
+                        width: 90,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                                text: user.userMod.cart[index]["name"] + "\n",
+                                style: TextStyle(
+                                    color: black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold)),
+                            TextSpan(
+                                text: "\$${user.userMod.cart[index]["price"]} \n",
+                                style: TextStyle(
+                                    color: black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w300)),
+                            TextSpan(
+                                text: "Quantity: ",
+                                style: TextStyle(
+                                    color: grey,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500)),
+                            TextSpan(
+                                text: user.userMod.cart[index]["quantity"].toString(),
+                                style: TextStyle(
+                                    color: red,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500))
+                          ]),
+                        ),
+                        SizedBox(
+                          width: 106,
+                        ),
+                        IconButton(icon: Icon(Icons.delete), onPressed: null)
+                      ],
+                    )
+                  ],
+                ),
               ),
-            ),
+            );
+          }),
+      bottomNavigationBar: Container(
+        height: 100,
+        child: Padding(
+          padding: const EdgeInsets.all(6.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              RichText(
+                text: TextSpan(children: [
+                  TextSpan(
+                      text: "Total: ",
+                      style: TextStyle(
+                          color: black,
+                          fontSize: 21,
+                          fontWeight: FontWeight.bold)),
+                  TextSpan(
+                      text: "\$4.55 \n",
+                      style: TextStyle(
+                          color: red,
+                          fontSize: 21,
+                          fontWeight: FontWeight.normal)),
+                ]),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20), color: red),
+                child: FlatButton(
+                  onPressed: () {},
+                  child: CustomText(
+                    text: "Pay",
+                    color: white,
+                    weight: FontWeight.w500,
+                    size: 20,
+                  ),
+                ),
+              )
+            ],
           ),
-
-      */
-        ],
+        ),
       ),
     );
   }
