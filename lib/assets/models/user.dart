@@ -12,7 +12,10 @@ class UserMod {
   String _email;
   String _id;
   String _stripeId;
+  double _priceSum = 0;
+  int _quantitySum = 0;
   List cart;
+  double totalCartPrice;
 
   // Getters implemented below
 
@@ -30,6 +33,14 @@ class UserMod {
     _id = snapshot.data[ID];
     _stripeId = snapshot.data[STRIPE_ID];
     cart = snapshot.data[CART] ?? [];
+    totalCartPrice = getTotalPrice(cart: snapshot.data[CART]);
+  }
+
+  double getTotalPrice({List cart}) {
+    for(Map cartStuff in cart) {
+      _priceSum += cartStuff["price"] * cartStuff["quantity"];
+    }
+    return _priceSum;
   }
 
 /*

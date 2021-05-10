@@ -15,8 +15,18 @@ class UserServices{
   }
 
   void insertToCart({String userId, Map cartStuff}) {
+    print("User ID: $userId ");
+    print("Items: ${cartStuff.toString()}");
     _firestore.collection(collection).document(userId).updateData({
       "cart": FieldValue.arrayUnion([cartStuff])
+    });
+  }
+
+  void deleteFromCart({String userId, Map cartStuff}) {
+    print("User ID: $userId ");
+    print("Items: ${cartStuff.toString()}");
+    _firestore.collection(collection).document(userId).updateData({
+      "cart": FieldValue.arrayRemove([cartStuff])
     });
   }
 

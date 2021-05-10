@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:restaurants_app/assets/helpers/style.dart';
+import 'package:restaurants_app/assets/providers/appLoading.dart';
 import 'package:restaurants_app/assets/providers/userAuth.dart';
+import 'package:restaurants_app/assets/widgets/loading.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
 import 'package:provider/provider.dart';
 
@@ -10,10 +12,15 @@ class ShoppingCartScr extends StatefulWidget {
 }
 
 class _ShoppingCartScrState extends State<ShoppingCartScr> {
+  final _key = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context);
+    final app = Provider.of<AppProv>(context);
+
     return Scaffold(
+      key: _key,
       appBar: AppBar(
         iconTheme: IconThemeData(color: black),
         backgroundColor: white,
@@ -28,21 +35,24 @@ class _ShoppingCartScrState extends State<ShoppingCartScr> {
             }),
       ),
       backgroundColor: white,
-      body: ListView.builder(
+      body: app.isLoading
+          ? Loading()
+          : ListView.builder(
           itemCount: user.userMod.cart.length,
           itemBuilder: (_, index) {
-            List itemsCart = user.userMod.cart;
             return Padding(
               padding: const EdgeInsets.all(10),
               child: Container(
                 height: 100,
-               // width: MediaQuery.of(context).size.width - 10,
+                // width: MediaQuery.of(context).size.width - 10,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: white,
                     boxShadow: [
                       BoxShadow(
-                          color: red[200], offset: Offset(3, 4), blurRadius: 30)
+                          color: red[200],
+                          offset: Offset(3, 4),
+                          blurRadius: 30)
                     ]),
                 child: Row(
                   children: [
@@ -67,13 +77,15 @@ class _ShoppingCartScrState extends State<ShoppingCartScr> {
                         RichText(
                           text: TextSpan(children: [
                             TextSpan(
-                                text: user.userMod.cart[index]["name"] + "\n",
+                                text:
+                                user.userMod.cart[index]["name"] + "\n",
                                 style: TextStyle(
                                     color: black,
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold)),
                             TextSpan(
-                                text: "\$${user.userMod.cart[index]["price"]} \n",
+                                text:
+                                "\$${user.userMod.cart[index]["price"]} \n",
                                 style: TextStyle(
                                     color: black,
                                     fontSize: 18,
@@ -85,7 +97,8 @@ class _ShoppingCartScrState extends State<ShoppingCartScr> {
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500)),
                             TextSpan(
-                                text: user.userMod.cart[index]["quantity"].toString(),
+                                text: user.userMod.cart[index]["quantity"]
+                                    .toString(),
                                 style: TextStyle(
                                     color: red,
                                     fontSize: 16,
@@ -95,7 +108,24 @@ class _ShoppingCartScrState extends State<ShoppingCartScr> {
                         SizedBox(
                           width: 106,
                         ),
-                        IconButton(icon: Icon(Icons.delete), onPressed: null)
+                        IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () async {
+                              app.LoadingSwitch();
+                              bool val = await user.deleteFromCart(
+                                  cartStuff: user.userMod.cart[index]);
+                              if (val) {
+                                user.refreshUserMod();
+                                // ignore: deprecated_member_use
+                                _key.currentState.showSnackBar(SnackBar(
+                                    content:
+                                    Text("Item Removed from Cart")));
+                                app.LoadingSwitch();
+                                return;
+                              } else {
+                                app.LoadingSwitch();
+                              }
+                            })
                       ],
                     )
                   ],
@@ -119,7 +149,7 @@ class _ShoppingCartScrState extends State<ShoppingCartScr> {
                           fontSize: 21,
                           fontWeight: FontWeight.bold)),
                   TextSpan(
-                      text: "\$4.55 \n",
+                      text: "\$${user.userMod.totalCartPrice}",
                       style: TextStyle(
                           color: red,
                           fontSize: 21,
@@ -129,6 +159,7 @@ class _ShoppingCartScrState extends State<ShoppingCartScr> {
               Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20), color: red),
+                // ignore: deprecated_member_use
                 child: FlatButton(
                   onPressed: () {},
                   child: CustomText(

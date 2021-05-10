@@ -82,10 +82,10 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<bool> insertToCart({ProductsMod product, int quantity}) async {
-    //try {
+    try {
       var uuid = Uuid();
       String cartStuffId = uuid.v4();
-      bool itemInCart = false;
+  //    bool itemInCart = false;
       //prevent duplicates
       List cart = _userMod.cart;
       Map cartStuff = {
@@ -98,23 +98,38 @@ class UserProvider with ChangeNotifier {
       };
       //prevent duplicates by adding another count of the product to the cart
       //instead of a new item.
-      for(Map item in cart){
-        if (item["productId"] == cartStuff["productId"]) {
-          item["quantity"] = item["quantity"] + quantity;
-          itemInCart = true;
-          break;
+   //   for(Map item in cart){
+    //    if (item["productId"] == cartStuff["productId"]) {
+     //     item["quantity"] = item["quantity"] + quantity;
+    //      itemInCart = true;
+    //      break;
           //break the loop after checking
-        }
-      }
-      if(!itemInCart) {
+     //   }
+   //   }
+   //   if(!itemInCart) {
         //if item does not exist then simply add to cart
-        _userMod.cart.add(cartStuff);
-      }
+     //   _userMod.cart.add(cartStuff);
+   //   }
       _userServices.insertToCart(userId: _user.uid, cartStuff: cartStuff);
-   //   return true;
-   // } catch (e) {
-    //  return false;
-   // }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteFromCart({Map cartStuff}) async {
+    try {
+
+      _userServices.deleteFromCart(userId: _user.uid, cartStuff: cartStuff);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> refreshUserMod() async {
+    _userMod = await _userServices.getUserById(user.uid);
+    notifyListeners();
   }
 
   Future<void> _onStateChanged(FirebaseUser firebaseUser) async {
