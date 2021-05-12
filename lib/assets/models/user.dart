@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:restaurants_app/assets/models/cartStuff.dart';
 
 class UserMod {
   static const NAME = "name";
@@ -13,7 +12,7 @@ class UserMod {
   String _id;
   String _stripeId;
   double _priceSum = 0;
-  int _quantitySum = 0;
+  //int _quantitySum = 0;
   List cart;
   double totalCartPrice;
 

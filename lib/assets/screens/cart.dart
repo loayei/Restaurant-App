@@ -111,7 +111,7 @@ class _ShoppingCartScrState extends State<ShoppingCartScr> {
                         IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () async {
-                              app.LoadingSwitch();
+                              app.loadingSwitch();
                               bool val = await user.deleteFromCart(
                                   cartStuff: user.userMod.cart[index]);
                               if (val) {
@@ -120,10 +120,10 @@ class _ShoppingCartScrState extends State<ShoppingCartScr> {
                                 _key.currentState.showSnackBar(SnackBar(
                                     content:
                                     Text("Item Removed from Cart")));
-                                app.LoadingSwitch();
+                                app.loadingSwitch();
                                 return;
                               } else {
-                                app.LoadingSwitch();
+                                app.loadingSwitch();
                               }
                             })
                       ],

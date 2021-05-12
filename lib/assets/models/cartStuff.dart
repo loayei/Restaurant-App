@@ -39,11 +39,11 @@ class CartStuffMod {
   }
 
   Map toMap() => {
-    NAME: _name,
-    IMAGE: _image,
-    ID: _id,
-    PRODUCT_ID: _productId,
-    PRICE: _price,
-    NUMBER_OF_ITEMS: quantity
-  };
+        NAME: _name,
+        IMAGE: _image,
+        ID: _id,
+        PRODUCT_ID: _productId,
+        PRICE: _price,
+        NUMBER_OF_ITEMS: quantity
+      };
 }

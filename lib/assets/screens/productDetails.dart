@@ -103,12 +103,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          app.LoadingSwitch();
+                          app.loadingSwitch();
                           bool val = await user.insertToCart(
                               product: widget.product, quantity: quantity);
                           if (val) {
                             user.refreshUserMod();
-                            app.LoadingSwitch();
+                            app.loadingSwitch();
                             return;
                           } else {
                             print("for console viewing: Item not added");

@@ -6,7 +6,7 @@ class AppProv with ChangeNotifier {
   double priceSum = 0;
   int totalQuantity = 0;
 
-  void LoadingSwitch() {
+  void loadingSwitch() {
     isLoading = !isLoading;
     notifyListeners();
   }

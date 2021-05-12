@@ -40,7 +40,7 @@ class ScreenSwitcher extends StatelessWidget {
       case Status.Unauthenticated:
       case Status.Authenticating:
         //While the process of authentication is running we will call the LoginScreen
-        return Loading();
+        return LoginScreen();
       case Status.Authenticated:
         //If authenticated successfully Screen will be switched to home screen called Initial
         return Initial();

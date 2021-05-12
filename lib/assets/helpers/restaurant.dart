@@ -8,14 +8,15 @@ class RestaurantServices {
   Future<List<RestaurantMod>> getRestaurants() async =>
       _firestore.collection(collection).getDocuments().then((result) {
         List<RestaurantMod> restaurants = [];
-        for(DocumentSnapshot restaurant in result.documents){
+        for (DocumentSnapshot restaurant in result.documents) {
           restaurants.add(RestaurantMod.fromSnapshot(restaurant));
         }
         return restaurants;
       });
 
   Future<List<RestaurantMod>> searchRestaurants({String restaurantName}) {
-    String keyFind = restaurantName[0].toUpperCase() + restaurantName.substring(1);
+    String keyFind =
+        restaurantName[0].toUpperCase() + restaurantName.substring(1);
     //Above code will ensure first character in search is always capital
     //since items usually start with a capital letter
     return _firestore
@@ -25,11 +26,11 @@ class RestaurantServices {
         .endAt([keyFind + '\uf8ff'])
         .getDocuments()
         .then((result) {
-      List<RestaurantMod> restaurants = [];
-      for(DocumentSnapshot restaurant in result.documents){
-        restaurants.add(RestaurantMod.fromSnapshot(restaurant));
-      }
-      return restaurants;
-    });
+          List<RestaurantMod> restaurants = [];
+          for (DocumentSnapshot restaurant in result.documents) {
+            restaurants.add(RestaurantMod.fromSnapshot(restaurant));
+          }
+          return restaurants;
+        });
   }
 }

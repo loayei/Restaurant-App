@@ -142,10 +142,10 @@ class _InitialState extends State<Initial> {
                           title: TextField(
                             textInputAction: TextInputAction.search,
                             onSubmitted: (pattern) async {
-                              app.LoadingSwitch();
+                              app.loadingSwitch();
                               await productProv.search(productName: pattern);
                               changeScreen(context, SearchedProductsScreen());
-                              app.LoadingSwitch();
+                              app.loadingSwitch();
                             },
                             decoration: InputDecoration(
                               hintText: "Search for food or restaurant",
@@ -216,10 +216,10 @@ class _InitialState extends State<Initial> {
                     children: restaurantProv.restaurants
                         .map((item) => GestureDetector(
                               onTap: () async {
-                                app.LoadingSwitch();
+                                app.loadingSwitch();
                                 await productProv.startProductsByRestaurant(
                                     restaurantId: item.id);
-                                app.LoadingSwitch();
+                                app.loadingSwitch();
                                 changeScreen(
                                     context,
                                     RestaurantScreen(
