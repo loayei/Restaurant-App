@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:restaurants_app/assets/helpers/order.dart';
 import 'package:restaurants_app/assets/helpers/style.dart';
 import 'package:restaurants_app/assets/providers/appLoading.dart';
 import 'package:restaurants_app/assets/providers/userAuth.dart';
 import 'package:restaurants_app/assets/widgets/loading.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class ShoppingCartScr extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class ShoppingCartScr extends StatefulWidget {
 
 class _ShoppingCartScrState extends State<ShoppingCartScr> {
   final _key = GlobalKey<ScaffoldState>();
+  OrderServices _orderServices = OrderServices();
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +164,18 @@ class _ShoppingCartScrState extends State<ShoppingCartScr> {
                     borderRadius: BorderRadius.circular(20), color: red),
                 // ignore: deprecated_member_use
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    var uuid = Uuid();
+                    String id = uuid.v4();
+                    _orderServices.createOrder(
+                        userId: user.user.uid,
+                        id: id,
+                        description: "Some random description",
+                        status: "complete",
+                        totalPrice: user.userMod.totalCartPrice,
+                        cart: user.userMod.cart
+                    );
+                  },
                   child: CustomText(
                     text: "Pay",
                     color: white,

@@ -3,19 +3,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class OrderMod {
   static const DESCRIPTION = "description";
   static const ID = "id";
-  static const AMOUNT = "amount";
-  static const PRODUCT_ID = "productId";
+  static const TOTAL = "total";
+  static const CART = "cart";
   static const USER_ID = "userId";
   static const DATE_CREATED = "dateCreated";
   static const STATUS = "status";
+  static const RESTAURANT_ID = "restaurantId";
 
   String _description;
   String _id;
-  double _amount;
-  String _productId;
+  double _total;
+  String _cart;
   String _userId;
   int _dateCreated;
   String _status;
+  String _restaurantId;
 
   //Getters are implemented below
 
@@ -23,9 +25,9 @@ class OrderMod {
 
   String get id => _id;
 
-  double get price => _amount;
+  double get total => _total;
 
-  String get productId => _productId;
+  String get cart => _cart;
 
   String get userId => _userId;
 
@@ -33,13 +35,17 @@ class OrderMod {
 
   String get status => _status;
 
+  String get restaurantId => _restaurantId;
+
+
   OrderMod.fromSnapshot(DocumentSnapshot snapshot) {
     _description = snapshot.data[DESCRIPTION];
     _id = snapshot.data[ID];
-    _amount = snapshot.data[AMOUNT];
-    _productId = snapshot.data[PRODUCT_ID];
+    _total = snapshot.data[TOTAL];
+    _cart = snapshot.data[CART];
     _userId = snapshot.data[USER_ID];
     _dateCreated = snapshot.data[DATE_CREATED];
     _status = snapshot.data[STATUS];
+    _restaurantId = snapshot.data[RESTAURANT_ID];
   }
 }
