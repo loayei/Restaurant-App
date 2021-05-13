@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:restaurants_app/assets/widgets/title.dart';
 
@@ -24,3 +25,5 @@ class BottomBarIcon extends StatelessWidget {
     );
   }
 }
+
+ */
