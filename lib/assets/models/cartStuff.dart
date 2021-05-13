@@ -7,6 +7,8 @@ class CartStuffMod {
   static const PRODUCT_ID = "productId";
   static const NUMBER_OF_ITEMS = "numberOfItems";
   static const PRICE = "price";
+  static const RESTAURANT_ID = "restaurantId";
+  static const TOTAL_REST_SALES = "totalRestSales";
 
   String _name;
   String _image;
@@ -14,6 +16,8 @@ class CartStuffMod {
   String _productId;
   double _price;
   int quantity;
+  String _restaurantId;
+  int _totalRestSales;
 
   // Getters implemented below
 
@@ -29,6 +33,10 @@ class CartStuffMod {
 
   int get numberOfItems => quantity;
 
+  String get restaurantId => restaurantId;
+
+  int get totalRestSales => totalRestSales;
+
   CartStuffMod.fromMap(Map data) {
     _name = data[NAME];
     _image = data[IMAGE];
@@ -36,6 +44,8 @@ class CartStuffMod {
     _productId = data[PRODUCT_ID];
     _price = data[PRICE];
     quantity = data[NUMBER_OF_ITEMS];
+    _restaurantId = data[RESTAURANT_ID];
+    _totalRestSales = data[TOTAL_REST_SALES];
   }
 
   Map toMap() => {
@@ -44,6 +54,8 @@ class CartStuffMod {
         ID: _id,
         PRODUCT_ID: _productId,
         PRICE: _price,
-        NUMBER_OF_ITEMS: quantity
+        NUMBER_OF_ITEMS: quantity,
+        RESTAURANT_ID: _restaurantId,
+        TOTAL_REST_SALES: _totalRestSales,
       };
 }

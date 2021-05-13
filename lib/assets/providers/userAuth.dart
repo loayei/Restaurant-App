@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurants_app/assets/helpers/order.dart';
 import 'package:restaurants_app/assets/helpers/user.dart';
+import 'package:restaurants_app/assets/models/order.dart';
 import 'package:restaurants_app/assets/models/products.dart';
 import 'package:restaurants_app/assets/models/user.dart';
 import 'package:uuid/uuid.dart';
@@ -14,6 +16,7 @@ class UserProvider with ChangeNotifier {
   Status _status = Status.Uninitialized;
   Firestore _fireStore = Firestore.instance;
   UserServices _userServices = UserServices();
+  OrderServices _orderServices = OrderServices();
   UserMod _userMod;
 
   //Getters are implemented below
@@ -23,6 +26,8 @@ class UserProvider with ChangeNotifier {
   UserMod get userMod => _userMod;
 
   FirebaseUser get user => _user;
+
+  List<OrderMod> orders = [];
 
   final formKey = GlobalKey<FormState>();
 
@@ -115,6 +120,11 @@ class UserProvider with ChangeNotifier {
     } catch (e) {
       return false;
     }
+  }
+
+  getOrders()async{
+    orders = await _orderServices.getUserOrders(userId: _user.uid);
+    notifyListeners();
   }
 
   Future<bool> deleteFromCart({Map cartStuff}) async {
