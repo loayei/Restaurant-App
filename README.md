@@ -1,6 +1,7 @@
 # restaurants_app
 
 Final Project CPSC 411
+Flutter App with Firebase
 
 ## Screenshots
 
